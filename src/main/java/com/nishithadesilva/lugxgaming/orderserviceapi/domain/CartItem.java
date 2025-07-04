@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
@@ -16,8 +17,10 @@ public class CartItem {
     //@Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     private UUID cartItemId;
 
+    @NotBlank(message = "Game ID is required.")
     private String gameId;
 
+    @NotBlank(message = "Quantity ID is required.")
     private int quantity;
 
     private String orderId;

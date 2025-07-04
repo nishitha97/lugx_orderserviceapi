@@ -3,6 +3,8 @@ package com.nishithadesilva.lugxgaming.orderserviceapi.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,12 +18,14 @@ public class Order {
     @Id
     private UUID orderId;
 
+    @NotBlank(message = "Customer ID is required.")
     private String customerId;
 
     private LocalDateTime orderDateTime;
 
     private BigDecimal totalPrice;
 
+    @Size(min = 1, max = 10, message = "Cart must have between 1 and 10 items.")
     private List<String> cartItemIds;
 
     public UUID getOrderId() {

@@ -5,13 +5,13 @@ import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Order;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.CartItemDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.GameDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.OrderDTO;
+import com.nishithadesilva.lugxgaming.orderserviceapi.exception.BadRequestException;
+import com.nishithadesilva.lugxgaming.orderserviceapi.helper.GameDetailsHelper;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemRepository;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 
@@ -27,20 +27,25 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final RestTemplate restTemplate;
+    private final GameDetailsHelper gameDetailsHelper;
 
     @Value("${gameservice.api.url}")
     private String gameServiceApi;
 
     @Autowired
-    public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, RestTemplate restTemplate) {
+    public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, GameDetailsHelper gameDetailsHelper) {
         this.cartItemRepository = cartItemRepository;
         this.cartItemService = cartItemService;
         this.orderRepository = orderRepository;
-        this.restTemplate = restTemplate;
+        this.gameDetailsHelper = gameDetailsHelper;
     }
 
     public Order createOrder(OrderDTO orderDTO) throws Exception {
+
+        if (orderDTO.getTotalPrice() != null) {
+            throw new BadRequestException("TotalPrice is not allowed be set.");
+        }
+
         Order order = new Order();
         order.setOrderId(UUID.randomUUID());
         order.setOrderDateTime(orderDTO.getOrderDateTime());
@@ -59,7 +64,7 @@ public class OrderService {
 
             CartItem cartItem = optionalCartItem.get();
 
-            GameDTO game = getGameDetails(cartItem.getGameId());
+            GameDTO game = gameDetailsHelper.getGameDetails(cartItem.getGameId());
 
             if (game != null) {
                 total = total.add(game.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
@@ -72,11 +77,5 @@ public class OrderService {
         order.setTotalPrice(total);
 
         return orderRepository.save(order);
-    }
-
-    private GameDTO getGameDetails(String gameId) {
-
-        ResponseEntity<GameDTO> response = restTemplate.getForEntity(gameServiceApi + gameId, GameDTO.class);
-        return response.getBody();
     }
 }
