@@ -6,13 +6,15 @@ import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CartItemService {
 
     private final CartItemRepository cartItemRepository;
 
     @Autowired
-    public CartItemService(CartItemRepository cartItemRepository){
+    public CartItemService(CartItemRepository cartItemRepository) {
         this.cartItemRepository = cartItemRepository;
     }
 
@@ -21,9 +23,27 @@ public class CartItemService {
         CartItem cartItem = new CartItem();
         cartItem.setQuantity(cartItemDTO.getQuantity());
         cartItem.setGameId(cartItemDTO.getGameId());
-        cartItem.setOrder(null);
+        cartItem.setOrderId(null);
 
         return cartItemRepository.save(cartItem);
     }
 
+    public CartItem updateCart(CartItemDTO cartItemDTO) {
+
+        Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemDTO.getCartItemId());
+
+        if (optionalCartItem.isEmpty()) {
+            throw new RuntimeException("CartItem not found");
+        }
+
+        CartItem cartItem = optionalCartItem.get();
+
+        if (cartItemDTO.getOrderId() != null) {
+            cartItem.setOrderId(cartItem.getOrderId());
+        }
+        cartItem.setQuantity(cartItemDTO.getQuantity());
+        cartItem.setGameId(cartItemDTO.getGameId());
+
+        return cartItemRepository.save(cartItem);
+    }
 }

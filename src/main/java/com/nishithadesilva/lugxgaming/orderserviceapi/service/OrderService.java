@@ -14,14 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class OrderService {
 
     private final CartItemRepository cartItemRepository;
+
+    private final CartItemService cartItemService;
 
     private final OrderRepository orderRepository;
 
@@ -31,38 +33,42 @@ public class OrderService {
     private String gameServiceApi;
 
     @Autowired
-    public OrderService(CartItemRepository cartItemRepository, OrderRepository orderRepository, RestTemplate restTemplate) {
+    public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, RestTemplate restTemplate) {
         this.cartItemRepository = cartItemRepository;
+        this.cartItemService = cartItemService;
         this.orderRepository = orderRepository;
         this.restTemplate = restTemplate;
     }
 
-    public Order createOrder(OrderDTO orderDTO) {
+    public Order createOrder(OrderDTO orderDTO) throws Exception {
         Order order = new Order();
         order.setOrderId(UUID.randomUUID());
         order.setOrderDateTime(orderDTO.getOrderDateTime());
         order.setCustomerId(orderDTO.getCustomerId());
+        order.setCartItemIds(orderDTO.getCartItemIds());
 
-        List<CartItem> cartItems = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
 
-        for (CartItemDTO itemDTO : orderDTO.getItems()) {
+        for (String cartItemId : orderDTO.getCartItemIds()) {
 
-            GameDTO game = getGameDetails(itemDTO.getGameId());
+            Optional<CartItem> optionalCartItem = cartItemRepository.findById(UUID.fromString(cartItemId));
+
+            if (optionalCartItem.isEmpty()) {
+                throw new Exception("Failed to place order. Invalid cartItemId provided :" + cartItemId);
+            }
+
+            CartItem cartItem = optionalCartItem.get();
+
+            GameDTO game = getGameDetails(cartItem.getGameId());
 
             if (game != null) {
-                CartItem item = new CartItem();
-                item.setGameId(game.getGameId().toString());
-                item.setQuantity(itemDTO.getQuantity());
-                item.setOrder(order);
-
-                total = total.add(game.getPrice().multiply(BigDecimal.valueOf(itemDTO.getQuantity())));
-
-                cartItems.add(item);
+                total = total.add(game.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
             }
-        }
 
-        order.setItems(cartItems);
+            cartItem.setOrderId(order.getOrderId().toString());
+            cartItemService.updateCart(new CartItemDTO(cartItem));
+
+        }
         order.setTotalPrice(total);
 
         return orderRepository.save(order);

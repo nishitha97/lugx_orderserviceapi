@@ -4,9 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Column;
 
 import java.util.UUID;
 
@@ -16,16 +13,14 @@ public class CartItem {
 
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
+    //@Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     private UUID cartItemId;
 
     private String gameId;
 
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    private String orderId;
 
     public UUID getCartItemId() {
         return cartItemId;
@@ -51,11 +46,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public Order getOrder() {
-        return order;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

@@ -3,8 +3,6 @@ package com.nishithadesilva.lugxgaming.orderserviceapi.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,8 +22,7 @@ public class Order {
 
     private BigDecimal totalPrice;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items;
+    private List<String> cartItemIds;
 
     public UUID getOrderId() {
         return orderId;
@@ -59,11 +56,11 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public List<CartItem> getItems() {
-        return items;
+    public List<String> getCartItemIds() {
+        return cartItemIds;
     }
 
-    public void setItems(List<CartItem> items) {
-        this.items = items;
+    public void setCartItemIds(List<String> items) {
+        this.cartItemIds = items;
     }
 }

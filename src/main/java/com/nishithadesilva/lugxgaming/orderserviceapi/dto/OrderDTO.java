@@ -13,7 +13,7 @@ public class OrderDTO {
     private String customerId;
 
     @NotNull
-    private List<CartItemDTO> items;
+    private List<String> cartItemIds;
 
     private BigDecimal totalPrice;
 
@@ -28,12 +28,12 @@ public class OrderDTO {
         this.customerId = customerId;
     }
 
-    public List<CartItemDTO> getItems() {
-        return items;
+    public List<String> getCartItemIds() {
+        return cartItemIds;
     }
 
-    public void setItems(List<CartItemDTO> items) {
-        this.items = items;
+    public void setCartItemIds(List<String> cartItemIds) {
+        this.cartItemIds = cartItemIds;
     }
 
     public BigDecimal getTotalPrice() {
