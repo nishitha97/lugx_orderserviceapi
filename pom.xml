@@ -99,6 +99,7 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<finalName>orderserviceapi</finalName>
 	</build>
 
 </project>
