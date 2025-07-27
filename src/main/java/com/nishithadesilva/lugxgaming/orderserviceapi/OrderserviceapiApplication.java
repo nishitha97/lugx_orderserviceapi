@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OrderserviceapiApplication {
 
 	public static void main(String[] args) {
-		System.out.printf("**************RUNNING LOG WITH VERSION *********** : " + 1);
+		System.out.printf("**************RUNNING LOG WITH VERSION *********** : " + 2);
 		SpringApplication.run(OrderserviceapiApplication.class, args);
 	}
 
