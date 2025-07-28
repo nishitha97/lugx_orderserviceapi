@@ -28,7 +28,7 @@ public class CartItemService {
 
         GameDTO gameDTO = gameDetailsHelper.getGameDetails(cartItemDTO.getGameId());
 
-        if (gameDTO != null) {
+        if (gameDTO == null) {
             throw new ItemNotFoundException("Game with id " + cartItemDTO.getGameId() + " not found.");
         }
 
