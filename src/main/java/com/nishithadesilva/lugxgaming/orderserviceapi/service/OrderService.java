@@ -29,9 +29,6 @@ public class OrderService {
 
     private final GameRepository gameRepository;
 
-    @Value("${gameservice.api.url}")
-    private String gameServiceApi;
-
     @Autowired
     public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, GameRepository gameRepository) {
         this.cartItemRepository = cartItemRepository;
