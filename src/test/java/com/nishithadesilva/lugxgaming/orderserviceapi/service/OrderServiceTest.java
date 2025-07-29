@@ -1,12 +1,12 @@
 package com.nishithadesilva.lugxgaming.orderserviceapi.service;
 
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.CartItem;
+import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Game;
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Order;
-import com.nishithadesilva.lugxgaming.orderserviceapi.dto.GameDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.OrderDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.exception.BadRequestException;
-import com.nishithadesilva.lugxgaming.orderserviceapi.helper.GameDetailsHelper;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemRepository;
+import com.nishithadesilva.lugxgaming.orderserviceapi.respository.GameRepository;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class OrderServiceTest {
     @Mock private CartItemRepository cartItemRepository;
     @Mock private CartItemService cartItemService;
     @Mock private OrderRepository orderRepository;
-    @Mock private GameDetailsHelper gameDetailsHelper;
+    @Mock private GameRepository gameRepository;
 
     @InjectMocks private OrderService orderService;
 
@@ -69,12 +69,12 @@ class OrderServiceTest {
         cartItem.setGameId(gameId);
         cartItem.setQuantity(2);
 
-        GameDTO gameDTO = new GameDTO();
-        gameDTO.setGameId(UUID.fromString(gameId));
-        gameDTO.setPrice(BigDecimal.valueOf(30)); // 30 * 2 = 60
+        Game game = new Game();
+        game.setGameId(UUID.fromString(gameId));
+        game.setPrice(BigDecimal.valueOf(30));
 
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.of(cartItem));
-        when(gameDetailsHelper.getGameDetails(gameId)).thenReturn(gameDTO);
+        when(gameRepository.findById(Mockito.any())).thenReturn(Optional.of(game));
         when(cartItemService.updateCart(any())).thenReturn(cartItem);
 
         Order savedOrder = new Order();

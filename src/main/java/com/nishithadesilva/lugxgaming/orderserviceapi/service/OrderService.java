@@ -1,13 +1,13 @@
 package com.nishithadesilva.lugxgaming.orderserviceapi.service;
 
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.CartItem;
+import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Game;
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Order;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.CartItemDTO;
-import com.nishithadesilva.lugxgaming.orderserviceapi.dto.GameDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.OrderDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.exception.BadRequestException;
-import com.nishithadesilva.lugxgaming.orderserviceapi.helper.GameDetailsHelper;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemRepository;
+import com.nishithadesilva.lugxgaming.orderserviceapi.respository.GameRepository;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,17 +27,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final GameDetailsHelper gameDetailsHelper;
+    private final GameRepository gameRepository;
 
     @Value("${gameservice.api.url}")
     private String gameServiceApi;
 
     @Autowired
-    public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, GameDetailsHelper gameDetailsHelper) {
+    public OrderService(CartItemRepository cartItemRepository, CartItemService cartItemService, OrderRepository orderRepository, GameRepository gameRepository) {
         this.cartItemRepository = cartItemRepository;
         this.cartItemService = cartItemService;
         this.orderRepository = orderRepository;
-        this.gameDetailsHelper = gameDetailsHelper;
+        this.gameRepository = gameRepository;
     }
 
     public Order createOrder(OrderDTO orderDTO) throws Exception {
@@ -59,14 +59,15 @@ public class OrderService {
             Optional<CartItem> optionalCartItem = cartItemRepository.findById(UUID.fromString(cartItemId));
 
             if (optionalCartItem.isEmpty()) {
-                throw new Exception("Failed to place order. Invalid cartItemId provided :" + cartItemId);
+                throw new BadRequestException("Failed to place order. Invalid cartItemId provided :" + cartItemId);
             }
 
             CartItem cartItem = optionalCartItem.get();
 
-            GameDTO game = gameDetailsHelper.getGameDetails(cartItem.getGameId());
+            Optional<Game> optionalGame = gameRepository.findById(UUID.fromString(cartItem.getGameId()));
 
-            if (game != null) {
+            if (optionalGame.isPresent()) {
+                Game game = optionalGame.get();
                 total = total.add(game.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
             }
 

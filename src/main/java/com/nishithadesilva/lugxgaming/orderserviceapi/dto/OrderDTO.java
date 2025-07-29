@@ -9,15 +9,15 @@ import java.util.List;
 
 public class OrderDTO {
 
-    @NotBlank
+    @NotBlank(message = "Customer ID is required.")
     private String customerId;
 
-    @NotNull
+    @NotNull(message = "CartItemIds is required.")
     private List<String> cartItemIds;
 
     private BigDecimal totalPrice;
 
-    @NotNull
+    @NotNull(message = "OrderDateTime is required.")
     private LocalDateTime orderDateTime;
 
     public String getCustomerId() {

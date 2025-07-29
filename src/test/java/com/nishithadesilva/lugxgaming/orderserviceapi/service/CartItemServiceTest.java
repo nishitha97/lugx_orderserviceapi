@@ -1,11 +1,12 @@
 package com.nishithadesilva.lugxgaming.orderserviceapi.service;
 
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.CartItem;
+import com.nishithadesilva.lugxgaming.orderserviceapi.domain.Game;
 import com.nishithadesilva.lugxgaming.orderserviceapi.dto.CartItemDTO;
-import com.nishithadesilva.lugxgaming.orderserviceapi.dto.GameDTO;
 import com.nishithadesilva.lugxgaming.orderserviceapi.exception.ItemNotFoundException;
-import com.nishithadesilva.lugxgaming.orderserviceapi.helper.GameDetailsHelper;
+
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemRepository;
+import com.nishithadesilva.lugxgaming.orderserviceapi.respository.GameRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -24,7 +25,7 @@ class CartItemServiceTest {
     private CartItemRepository cartItemRepository;
 
     @Mock
-    private GameDetailsHelper gameDetailsHelper;
+    private GameRepository gameRepository;
 
     @InjectMocks
     private CartItemService cartItemService;
@@ -35,7 +36,7 @@ class CartItemServiceTest {
         dto.setGameId(UUID.randomUUID().toString());
         dto.setQuantity(2);
 
-        when(gameDetailsHelper.getGameDetails(anyString())).thenReturn(null);
+        when(gameRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
         assertThrows(ItemNotFoundException.class, () -> cartItemService.createCart(dto));
     }
@@ -48,15 +49,15 @@ class CartItemServiceTest {
         dto.setGameId(gameId);
         dto.setQuantity(2);
 
-        GameDTO gameDTO = new GameDTO();
-        gameDTO.setGameId(UUID.fromString(gameId));
+        Game game = new Game();
+        game.setGameId(UUID.fromString(gameId));
 
         CartItem expectedCartItem = new CartItem();
         expectedCartItem.setCartItemId(UUID.randomUUID());
         expectedCartItem.setGameId(gameId);
         expectedCartItem.setQuantity(2);
 
-        when(gameDetailsHelper.getGameDetails(gameId)).thenReturn(gameDTO);
+        when(gameRepository.findById(Mockito.any())).thenReturn(Optional.of(game));
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(expectedCartItem);
 
         CartItem result = cartItemService.createCart(dto);
