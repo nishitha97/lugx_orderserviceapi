@@ -10,7 +10,6 @@ import com.nishithadesilva.lugxgaming.orderserviceapi.respository.CartItemReposi
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.GameRepository;
 import com.nishithadesilva.lugxgaming.orderserviceapi.respository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

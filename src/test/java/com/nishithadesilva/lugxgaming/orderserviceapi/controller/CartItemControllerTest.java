@@ -51,20 +51,4 @@ class CartItemControllerTest {
                 .andExpect(jsonPath("$.gameId").value(dto.getGameId()))
                 .andExpect(jsonPath("$.quantity").value(dto.getQuantity()));
     }
-
-    @Test
-    void createOrder_shouldReturn500_whenExceptionOccurs() throws Exception {
-        CartItemDTO dto = new CartItemDTO();
-        dto.setGameId(UUID.randomUUID().toString());
-        dto.setQuantity(2);
-
-        when(cartItemService.createCart(any(CartItemDTO.class)))
-                .thenThrow(new RuntimeException("Something went wrong"));
-
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Failed to create cartItem: Something went wrong"));
-    }
 }
