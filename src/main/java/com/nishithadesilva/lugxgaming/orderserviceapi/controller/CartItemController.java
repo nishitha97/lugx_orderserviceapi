@@ -23,13 +23,8 @@ public class CartItemController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody @Valid CartItemDTO cartItemDTO) {
-        try {
-            CartItem cartItem = cartItemService.createCart(cartItemDTO);
-            return ResponseEntity.ok(cartItem);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to create cartItem: " + e.getMessage());
-        }
+    public ResponseEntity<?> createOrder(@RequestBody @Valid CartItemDTO cartItemDTO) throws Exception{
+        CartItem cartItem = cartItemService.createCart(cartItemDTO);
+        return ResponseEntity.ok(cartItem);
     }
-
 }

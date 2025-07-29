@@ -1,26 +1,27 @@
-package com.nishithadesilva.lugxgaming.orderserviceapi.dto;
+package com.nishithadesilva.lugxgaming.orderserviceapi.domain;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class GameDTO {
+@Entity
+@Table(name = "game")
+public class Game {
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    //@Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     private UUID gameId;
 
-    @NotBlank(message = "Game name is required.")
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Game category is required.")
     private String category;
 
-    @NotNull(message = "Game releaseDate is required.")
     private LocalDate releaseDate;
 
-    @NotNull(message = "Game price is required.")
     private BigDecimal price;
 
     public String getName() {

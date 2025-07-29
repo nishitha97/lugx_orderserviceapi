@@ -18,7 +18,6 @@ public class Order {
     @Id
     private UUID orderId;
 
-    @NotBlank(message = "Customer ID is required.")
     private String customerId;
 
     private LocalDateTime orderDateTime;
