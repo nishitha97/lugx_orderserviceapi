@@ -2,7 +2,9 @@ package com.nishithadesilva.lugxgaming.orderserviceapi.dto;
 
 import com.nishithadesilva.lugxgaming.orderserviceapi.domain.CartItem;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.UUID;
 
@@ -10,11 +12,13 @@ public class CartItemDTO {
 
     private UUID cartItemId;
 
-    @NotNull
+    @NotBlank(message = "Game ID is required.")
     private String gameId;
 
-    @Min(1)
-    private int quantity;
+    @Positive(message = "Quantity must be a positive number.")
+    @Min(value = 1, message = "Quantity must be at least 1.")
+    @NotNull
+    private Integer quantity;
 
     private String orderId;
 
@@ -39,11 +43,11 @@ public class CartItemDTO {
         this.gameId = gameId;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

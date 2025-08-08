@@ -20,12 +20,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO) {
-        try {
-            Order createdOrder = orderService.createOrder(orderDTO);
-            return ResponseEntity.ok(createdOrder);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to create order: " + e.getMessage());
-        }
+    public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO) throws Exception {
+        Order createdOrder = orderService.createOrder(orderDTO);
+        return ResponseEntity.ok(createdOrder);
     }
 }
