@@ -12,7 +12,7 @@
 
 	<groupId>com.nishithadesilva.lugxgaming</groupId>
     <artifactId>orderserviceapi</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>orderserviceapi</name>
     <description>Order Service API for Lugx Gaming</description>
 
